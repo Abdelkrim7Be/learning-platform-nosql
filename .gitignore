@@ -1,3 +1,4 @@
 # Compléter ici !!!!???
-
+# Explication : Le fichier .gitignore permet de spécifier les fichiers et dossiers qui ne doivent pas être suivis par Git. Dans notre cas , on va mettre le fichier environnement .env, les dossiers node_modules
 node_modules
+.env
