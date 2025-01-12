@@ -1,60 +1,120 @@
-# Projet de fin de module NoSQL
+# Learning Platform NoSQL
 
-Pour ce projet, vous allez créer une petite API qui va servir de backend à une plateforme d'apprentissage en ligne. J'ai préparé la structure du projet avec une organisation professionnelle du code, comme vous pouvez le constater dans ce dépôt Github.
+## Installation et Lancement du Projet
 
-Commençons par l'organisation pratique :
+### Prérequis
 
-1. Création de votre dépôt :
-   - Sur Github.com
-   - Créez un nouveau dépôt public
-   - Nommez-le "learning-platform-nosql"
-   - Ne l'initialisez pas avec un README pour le moment
+- Node.js (version 14 ou supérieure)
+- MongoDB
+- Redis
 
-2. Configuration de votre environnement local :
+### Étapes d'installation
+
+1. Clonez le dépôt :
+
    ```bash
-   # Clonez mon dépôt template (ce dépôt)
-   git clone https://github.com/pr-daaif/learning-platform-template
-   
-   # Renommez le dépôt origin
-   cd learning-platform-template
-   git remote remove origin
-   
-   # Ajoutez votre dépôt comme nouvelle origine
-   git remote add origin https://github.com/[votre-compte]/learning-platform-nosql
-   
-   # Poussez le code vers votre dépôt
-   git push -u origin main
+   git clone <URL_DU_DEPOT>
+   cd learning-platform-nosql
    ```
 
-3. Installation des dépendances :
+2. Installez les dépendances :
+
    ```bash
    npm install
    ```
 
-Je vous propose une structure de code qui suit les bonnes pratiques de développement. Vous trouverez dans le code des commentaires avec des **questions qui vous guideront dans votre réflexion**. Ces questions sont importantes car elles vous aideront à comprendre les choix d'architecture.
+3. Configurez les variables d'environnement :
 
-### Aspects professionnels à noter :
-- Utilisation des variables d'environnement pour la configuration
-- Séparation claire des responsabilités (routes, contrôleurs, services)
-- Gestion propre des connexions aux bases de données
-- Organisation modulaire du code
-- Gestion des erreurs et des cas limites
-- Documentation du code
+   - Copiez le fichier `.env.example` en `.env` :
+     ```bash
+     cp .env.example .env
+     ```
+   - Remplissez les valeurs appropriées dans le fichier `.env`.
 
-### Pour le rendu, voici ce que j'attends :
-1. Un dépôt public sur Github avec un historique de commits clair
-2. Un README.md qui explique :
-   - Comment installer et lancer le projet
-   - La structure du projet
-   - Les choix techniques que vous avez faits
-   - Les réponses aux questions posées dans les commentaires
-3. Le code complété avec tous les TODOs implémentés
+4. Lancez le projet :
+   ```bash
+   npm start
+   ```
 
-### Je vous conseille de procéder étape par étape :
-1. Commencez par lire et comprendre la structure du projet
-2. Répondez aux questions des commentaires dans le README
-3. Implémentez progressivement les TODOs
-4. Testez chaque fonctionnalité au fur et à mesure
-5. Documentez vos choix et vos réflexions en ajoutant des copies d'écrans à votre fichier README.md
+## Structure du Projet
 
-#### Bon courage
+```
+learning-platform-nosql/
+├── src/
+│   ├── config/
+│   │   ├── db.js
+│   │   ├── env.js
+│   ├── controllers/
+│   │   ├── courseController.js
+│   ├── routes/
+│   │   ├── courseRoutes.js
+│   ├── services/
+│   │   ├── mongoService.js
+│   │   ├── redisService.js
+│   ├── app.js
+├── .env.example
+├── .gitignore
+├── package.json
+└── README.md
+```
+
+## Choix Techniques
+
+- **Express.js** : Utilisé pour créer le serveur et gérer les routes.
+- **MongoDB** : Base de données NoSQL pour stocker les données des cours.
+- **Redis** : Utilisé pour le caching afin d'améliorer les performances.
+- **dotenv** : Pour gérer les variables d'environnement.
+
+## Réponses aux Questions
+
+### .env.example
+
+- **Quelles sont les informations sensibles à ne jamais commiter ?**
+  - Les informations sensibles comprennent les clés API, les mots de passe, les bases de données et d'autres.
+- **Pourquoi utiliser des variables d'environnement ?**
+  - Pour assurer une bonne structuration du code en séparant les paramètres de configuration et en même temps protéger les informations sensibles à être partagées en public (GitHub, etc.).
+
+### .gitignore
+
+- **Explication :**
+  - Le fichier `.gitignore permet de spécifier les fichiers et dossiers qui ne doivent pas être suivis par Git. Dans notre cas, on va mettre le fichier environnement `.env`et les dossiers`node_modules`.
+
+### src/config/env.js
+
+- **Pourquoi est-il important de valider les variables d'environnement au démarrage ?**
+  - Il est impératif de valider les variables d'environnement au démarrage pour éviter des erreurs de configuration pendant l'exécution du code.
+- **Que se passe-t-il si une variable requise est manquante ?**
+  - Dans ce cas, l'application doit lever une erreur explicative et arrêter son exécution.
+
+### src/config/db.js
+
+- **Pourquoi créer un module séparé pour les connexions aux bases de données ?**
+  - Je pense que cela permet de centraliser la logique de connexion, de faciliter la maintenance et de réutiliser le code dans différentes parties de l'application.
+- **Comment gérer proprement la fermeture des connexions ?**
+  - Pour ce faire, il faut implémenter des fonctions de fermeture qui s'assurent que toutes les connexions sont correctement fermées avant que l'application ne se termine.
+
+### src/controllers/courseController.js
+
+- **Quelle est la différence entre un contrôleur et une route ?**
+  - Une route définit les URL et les méthodes HTTP, alors qu'un contrôleur contient la logique métier exécutée par ces routes.
+- **Pourquoi séparer la logique métier des routes ?**
+  - Pour rendre le code plus modulaire, maintenable.
+
+### src/routes/courseRoutes.js
+
+- **Pourquoi séparer les routes dans différents fichiers ?**
+  - Pour bien organiser le code.
+- **Comment organiser les routes de manière cohérente ?**
+  - Grouper les routes similaires dans les mêmes fichiers.
+
+### src/services/redisService.js
+
+- **Comment gérer efficacement le cache avec Redis ?**
+  - Utiliser des TTL (Time To Live) pour les clés, invalider le cache lorsque les données changent, et structurer les clés de manière logique.
+- **Quelles sont les bonnes pratiques pour les clés Redis ?**
+  - Utiliser des noms de clés descriptifs et cohérents, éviter les clés trop longues, et utiliser des namespaces pour organiser les clés.
+
+### src/services/mongoService.js
+
+- **Pourquoi créer des services séparés ?**
+  - Assurer la modularité du code et une facilité des tests.
