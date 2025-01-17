@@ -3,7 +3,27 @@
 // Question: Quelles sont les bonnes pratiques pour les clés Redis ?
 // Réponse : Utiliser des noms de clés descriptifs et cohérents, éviter les clés trop longues, et utiliser des namespaces pour organiser les clés.
 
-const redisClient = require("../config/db").obtenirClientRedis();
+const redis = require("redis");
+const RedisInsight = require("redis-insight");
+
+const redisClient = redis.createClient({
+  host: process.env.REDIS_HOST,
+  port: process.env.REDIS_PORT,
+});
+
+const redisInsight = new RedisInsight({
+  host: process.env.REDIS_INSIGHT_HOST,
+  port: process.env.REDIS_INSIGHT_PORT,
+});
+
+redisClient.on("connect", () => {
+  console.log("Connected to Redis");
+  redisInsight.connect();
+});
+
+redisClient.on("error", (err) => {
+  console.error("Redis error:", err);
+});
 
 // Fonctions utilitaires pour Redis
 async function cacheData(key, data, ttl) {
