@@ -3,42 +3,88 @@
 // Question : Pourquoi séparer la logique métier des routes ?
 // Réponse : Pour rendre le code plus modulaire, maintenable.
 
-const { ObjectId } = require("mongodb");
-const db = require("../config/db");
 const mongoService = require("../services/mongoService");
-const redisService = require("../services/redisService");
 
-async function createCourse(req, res) {
-  try {
-    const { title, description, instructor } = req.body;
-    if (!title || !description || !instructor) {
-      return res.status(400).json({ message: "Tous les champs sont requis." });
+const courseController = {
+  async createCourse(req, res) {
+    try {
+      console.log("createCourse called with data:", req.body);
+      const course = await mongoService.insertCourse(req.body);
+      console.log("Course created:", course);
+      res.status(201).json(course);
+    } catch (error) {
+      console.error("Failed to create course:", error);
+      res.status(500).json({ error: "Failed to create course" });
     }
+  },
 
-    const newCourse = {
-      title,
-      description,
-      instructor,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+  async getAllCourses(req, res) {
+    try {
+      console.log("getAllCourses called");
+      const courses = await mongoService.getAllCourses();
+      console.log("Courses retrieved:", courses);
+      res.status(200).json(courses);
+    } catch (error) {
+      console.error("Failed to get courses:", error);
+      res.status(500).json({ error: "Failed to get courses" });
+    }
+  },
 
-    const result = await mongoService.insertOne("courses", newCourse);
-    await redisService.set(
-      `course:${result.insertedId}`,
-      JSON.stringify(newCourse)
-    );
+  async getCourseById(req, res) {
+    try {
+      console.log("getCourseById called with ID:", req.params.id);
+      const course = await mongoService.getCourseById(req.params.id);
+      if (!course) {
+        console.log("Course not found with ID:", req.params.id);
+        return res.status(404).json({ error: "Course not found" });
+      }
+      console.log("Course retrieved:", course);
+      res.status(200).json(course);
+    } catch (error) {
+      console.error("Failed to get course:", error);
+      res.status(500).json({ error: "Failed to get course" });
+    }
+  },
 
-    res
-      .status(201)
-      .json({ message: "Cours créé avec succès.", course: newCourse });
-  } catch (error) {
-    console.error("Erreur lors de la création du cours:", error);
-    res.status(500).json({ message: "Erreur interne du serveur." });
-  }
-}
+  async updateCourse(req, res) {
+    try {
+      console.log(
+        "updateCourse called with ID:",
+        req.params.id,
+        "and data:",
+        req.body
+      );
+      const course = await mongoService.updateCourseById(
+        req.params.id,
+        req.body
+      );
+      if (!course) {
+        console.log("Course not found with ID:", req.params.id);
+        return res.status(404).json({ error: "Course not found" });
+      }
+      console.log("Course updated:", course);
+      res.status(200).json(course);
+    } catch (error) {
+      console.error("Failed to update course:", error);
+      res.status(500).json({ error: "Failed to update course" });
+    }
+  },
 
-// Export des contrôleurs
-module.exports = {
-  createCourse,
+  async deleteCourse(req, res) {
+    try {
+      console.log("deleteCourse called with ID:", req.params.id);
+      const course = await mongoService.deleteCourseById(req.params.id);
+      if (!course) {
+        console.log("Course not found with ID:", req.params.id);
+        return res.status(404).json({ error: "Course not found" });
+      }
+      console.log("Course deleted with ID:", req.params.id);
+      res.status(200).json({ message: "Course deleted successfully" });
+    } catch (error) {
+      console.error("Failed to delete course:", error);
+      res.status(500).json({ error: "Failed to delete course" });
+    }
+  },
 };
+
+module.exports = courseController;

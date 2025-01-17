@@ -27,7 +27,7 @@
 
    - Copiez le fichier `.env.example` en `.env` :
      ```bash
-     cp .env.example .env
+     cp src/.env.example src/.env
      ```
    - Remplissez les valeurs appropriées dans le fichier `.env`.
 
@@ -46,13 +46,16 @@ learning-platform-nosql/
 │   │   ├── env.js
 │   ├── controllers/
 │   │   ├── courseController.js
+│   │   ├── studentController.js
 │   ├── routes/
 │   │   ├── courseRoutes.js
+│   │   ├── studentRoutes.js
 │   ├── services/
 │   │   ├── mongoService.js
 │   │   ├── redisService.js
+│   ├── .env
+│   ├── .env.example
 │   ├── app.js
-├── .env.example
 ├── .gitignore
 ├── package.json
 └── README.md
@@ -61,7 +64,7 @@ learning-platform-nosql/
 ## Choix Techniques
 
 - **Express.js** : Utilisé pour créer le serveur et gérer les routes.
-- **MongoDB** : Base de données NoSQL pour stocker les données des cours.
+- **MongoDB** : Base de données NoSQL pour stocker les données des cours et des étudiants.
 - **Redis** : Utilisé pour le caching afin d'améliorer les performances.
 - **dotenv** : Pour gérer les variables d'environnement.
 

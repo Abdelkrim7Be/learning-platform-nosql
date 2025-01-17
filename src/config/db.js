@@ -4,60 +4,64 @@
 // Réponse : Pour ce faire, il faut implémenter des fonctions de fermeture qui s'assurent que toutes les connexions sont correctement fermées avant que l'application ne se termine.
 
 const { MongoClient } = require("mongodb");
-const redis = require("redis");
+// const redis = require("redis");
 const config = require("./env");
 
 let clientMongo, clientRedis, db;
 
 async function connecterMongo() {
   try {
-    clientMongo = new MongoClient(config.MONGODB_URI, {
+    console.log(
+      "Attempting to connect to MongoDB with URI:",
+      config.mongodb.uri
+    );
+    clientMongo = new MongoClient(config.mongodb.uri, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
     await clientMongo.connect();
-    db = clientMongo.db(config.MONGODB_DB_NAME);
-    console.log("Connecté à MongoDB");
+    db = clientMongo.db(config.mongodb.dbName);
+    console.log("Connected to MongoDB");
   } catch (erreur) {
-    console.error("Erreur de connexion à MongoDB :", erreur);
+    console.error("Failed to connect to MongoDB:", erreur);
     process.exit(1);
   }
 }
 
-async function connecterRedis() {
-  try {
-    clientRedis = redis.createClient({ url: config.REDIS_URI });
-    clientRedis.on("error", (err) =>
-      console.error("Erreur du client Redis", err)
-    );
-    await clientRedis.connect();
-    console.log("Connecté à Redis");
-  } catch (erreur) {
-    console.error("Erreur de connexion à Redis :", erreur);
-    process.exit(1);
-  }
-}
+// async function connecterRedis() {
+//   try {
+//     clientRedis = redis.createClient({ url: config.REDIS_URI });
+//     clientRedis.on("error", (err) =>
+//       console.error("Erreur du client Redis", err)
+//     );
+//     await clientRedis.connect();
+//     console.log("Connecté à Redis");
+//   } catch (erreur) {
+//     console.error("Erreur de connexion à Redis :", erreur);
+//     process.exit(1);
+//   }
+// }
 
 async function fermerConnexions() {
   try {
     if (clientMongo) {
       await clientMongo.close();
-      console.log("Connexion MongoDB fermée");
+      console.log("MongoDB connection closed");
     }
-    if (clientRedis) {
-      await clientRedis.quit();
-      console.log("Connexion Redis fermée");
-    }
+    // if (clientRedis) {
+    //   await clientRedis.quit();
+    //   console.log("Redis connection closed");
+    // }
   } catch (erreur) {
-    console.error("Erreur lors de la fermeture des connexions :", erreur);
+    console.error("Error closing connections:", erreur);
   }
 }
 
 // Export des fonctions et clients
 module.exports = {
   connecterMongo,
-  connecterRedis,
+  // connecterRedis,
   fermerConnexions,
   obtenirDb: () => db,
-  obtenirClientRedis: () => clientRedis,
+  // obtenirClientRedis: () => clientRedis,
 };
