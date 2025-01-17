@@ -15,10 +15,7 @@ async function connecterMongo() {
       "Attempting to connect to MongoDB with URI:",
       config.mongodb.uri
     );
-    clientMongo = new MongoClient(config.mongodb.uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    clientMongo = new MongoClient(config.mongodb.uri);
     await clientMongo.connect();
     db = clientMongo.db(config.mongodb.dbName);
     console.log("Connected to MongoDB");

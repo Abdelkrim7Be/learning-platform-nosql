@@ -121,3 +121,31 @@ learning-platform-nosql/
 
 - **Pourquoi créer des services séparés ?**
   - Assurer la modularité du code et une facilité des tests.
+
+## Exemples de Tests de l'API
+
+Voici les collections remplies grâce aux APIs de création et de mise à jour :
+
+### Collections Students
+
+![Collections Students](image-4.png)
+
+### Collections Courses
+
+![Collections Courses](image-5.png)
+
+### Récupération de tous les étudiants
+
+![Fetching tous les étudiants](image.png)
+
+### Récupération d'un étudiant par son \_id
+
+![Fetch un étudiant par son _id](image-1.png)
+
+### Récupération de tous les cours
+
+![Get all courses](image-2.png)
+
+### Récupération d'un cours par son \_id
+
+![Get course by id](image-3.png)

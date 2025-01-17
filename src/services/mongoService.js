@@ -20,7 +20,9 @@ const mongoService = {
   // Course operations
   async insertCourse(data) {
     const collection = getCourseCollection();
+    console.log("Inserting course with data:", data);
     const result = await collection.insertOne(data);
+    console.log("Insert course result:", result);
     return result.ops[0];
   },
 
@@ -36,11 +38,13 @@ const mongoService = {
 
   async updateCourseById(id, data) {
     const collection = getCourseCollection();
+    console.log("Updating course with ID:", id, "and data:", data);
     const result = await collection.findOneAndUpdate(
       { _id: new ObjectId(id) },
       { $set: data },
       { returnOriginal: false }
     );
+    console.log("Update course result:", result);
     return result.value;
   },
 
@@ -90,8 +94,14 @@ const mongoService = {
   // Student operations
   async insertStudent(data) {
     const collection = getStudentCollection();
+    console.log("Inserting student with data:", data);
     const result = await collection.insertOne(data);
-    return result.ops[0];
+    console.log("Insert student result:", result);
+    if (result.insertedCount === 1) {
+      return result.ops[0];
+    } else {
+      throw new Error("Failed to insert student");
+    }
   },
 
   async getAllStudents() {
@@ -106,11 +116,13 @@ const mongoService = {
 
   async updateStudentById(id, data) {
     const collection = getStudentCollection();
+    console.log("Updating student with ID:", id, "and data:", data);
     const result = await collection.findOneAndUpdate(
       { _id: new ObjectId(id) },
       { $set: data },
       { returnOriginal: false }
     );
+    console.log("Update student result:", result);
     return result.value;
   },
 
